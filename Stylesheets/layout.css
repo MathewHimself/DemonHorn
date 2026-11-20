@@ -44,7 +44,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .slide {
   --enter: 1;
   --cover: 0;
-  --tilt: -7deg; /* наклон слайда в начале въезда */
+  --tilt: -5deg; /* наклон слайда в начале въезда */
 
   position: sticky;
   top: 0;
@@ -56,7 +56,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   transform-origin: 50% 0%; /* въезд: поворот вокруг середины верхнего края */
   transform:
     rotate(calc(var(--tilt) * (1 - var(--enter))))
-    scale(calc(1 + 0.25 * (1 - var(--enter))))
+    scale(calc(1 + 0.2 * (1 - var(--enter))))
     scale(calc(1 - 0.08 * var(--cover)));
   will-change: transform;
 }
@@ -72,7 +72,24 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 
 .slide--hero  { background: var(--bg); transform-origin: 50% 50%; } /* уходит вглубь от центра */
-.slide--steps { background: var(--black); }
+.slide--steps { background: transparent; }
+
+/* Наезжающий слайд: панель с зубчатым краем-«рогами» и красная
+   кромка под ней. Форму края (clip-path) рисует scripts.js,
+   к концу въезда зубцы сглаживаются в ровную линию. */
+.slide__rim,
+.slide__panel {
+  position: absolute;
+  inset: 0;
+}
+
+.slide__rim { background: var(--red); }
+
+.slide__panel {
+  display: grid;
+  place-items: center;
+  background: var(--black);
+}
 
 /* ---------- Сцена ---------- */
 .stage {

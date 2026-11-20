@@ -33,6 +33,7 @@
 @media (prefers-reduced-motion: reduce) {
   .horn, .horn__img, .whisper__typed::after { animation: none; }
   .slide { transform: none; }
+  .slide__rim, .slide__panel { clip-path: none !important; }
 
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
