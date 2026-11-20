@@ -5,6 +5,7 @@
   --bg: #FFFFFF;
   --ink: #120909;
   --black: #000000;
+  --white: #FFFFFF;
   --red: #DA0000;
 
   /* Макет 1920×1080: 1 px макета = --u, сцена вписывается в окно целиком */
@@ -18,28 +19,66 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html, body { height: 100%; }
+html { background: var(--black); }
 
 body {
-  background: var(--bg);
+  background: var(--black);
   color: var(--ink);
   font-family: "Inter", system-ui, sans-serif;
   font-weight: 300;
   line-height: 1.4; /* reset.css ставит 1 — возвращаем читаемый интерлиньяж */
-  display: grid;
-  place-items: center;
-  overflow: hidden;
 }
 
 button { font: inherit; color: inherit; cursor: pointer; }
+
+/* ---------- Слайды ----------
+   Каждый слайд — экран, прилипающий к верху окна. Следующий слайд
+   выезжает поверх предыдущего: сначала повёрнутый и чуть увеличенный,
+   к концу въезда — ровный. Прогресс въезда (--enter) и перекрытия
+   (--cover), от 0 до 1, выставляет scripts.js. */
+.slides {
+  position: relative;
+  overflow: clip; /* повёрнутый край не даёт лишней прокрутки; clip, в отличие от hidden, не ломает sticky */
+}
+
+.slide {
+  --enter: 1;
+  --cover: 0;
+  --tilt: -7deg; /* наклон слайда в начале въезда */
+
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  transform-origin: 50% 0%; /* въезд: поворот вокруг середины верхнего края */
+  transform:
+    rotate(calc(var(--tilt) * (1 - var(--enter))))
+    scale(calc(1 + 0.25 * (1 - var(--enter))))
+    scale(calc(1 - 0.08 * var(--cover)));
+  will-change: transform;
+}
+
+/* Перекрытый слайд уходит в тень */
+.slide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--black);
+  opacity: calc(var(--cover) * 0.7);
+  pointer-events: none;
+}
+
+.slide--hero  { background: var(--bg); transform-origin: 50% 50%; } /* уходит вглубь от центра */
+.slide--steps { background: var(--black); }
 
 /* ---------- Сцена ---------- */
 .stage {
   position: relative;
   width: calc(var(--u) * 1920);
   height: calc(var(--u) * 1080);
-  overflow: hidden;
-  background: var(--bg);
 }
 
 /* ---------- Рог ---------- */
@@ -142,4 +181,57 @@ button { font: inherit; color: inherit; cursor: pointer; }
   margin-left: calc(var(--u) * 3);
   vertical-align: -0.1em;
   background: currentColor;
+}
+
+/* ---------- Слайд 2. Инструкция ---------- */
+.steps__title {
+  position: absolute;
+  left: calc(50% + var(--u) * 0.5);
+  top: calc(var(--u) * 164);
+  translate: -50% 0;
+  font-size: calc(var(--u) * 30);
+  line-height: 0.862;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--white);
+}
+
+.step {
+  --x: 0;
+  position: absolute;
+  left: calc(50% + var(--u) * var(--x));
+  top: calc(var(--u) * 281);
+  width: calc(var(--u) * 523);
+  translate: -50% 0;
+  text-align: center;
+  color: var(--white);
+}
+
+.step--1 { --x: -588.5; }
+.step--2 { --x: -0.5; }
+.step--3 { --x: 587.5; }
+
+.step__img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.step__text {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--u) * 544); /* 825 − 281 */
+  translate: -50% 0;
+  font-size: calc(var(--u) * 30);
+  line-height: 0.862;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.step--3 .step__text {
+  top: calc(var(--u) * 546);
+  width: calc(var(--u) * 382);
+  line-height: 1.05;
+  white-space: normal;
 }

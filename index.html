@@ -8,7 +8,11 @@
 </head>
 <body>
 
-  <main class="stage">
+  <main class="slides">
+
+    <!-- Слайд 1. Главный экран -->
+    <section class="slide slide--hero" aria-label="Rog Demona">
+    <div class="stage">
     <div class="horn" aria-hidden="true">
       <img class="horn__img" src="images/horn.png" alt="">
     </div>
@@ -23,6 +27,31 @@
       <span class="whisper__ghost" aria-hidden="true">гнев&nbsp; вернется&nbsp; потом</span>
       <span class="whisper__typed" aria-hidden="true"></span>
     </p>
+    </div>
+    </section>
+
+    <!-- Слайд 2. Инструкция — наезжает на главный экран при прокрутке -->
+    <section class="slide slide--steps" aria-labelledby="steps-title">
+      <div class="stage">
+        <h2 class="steps__title" id="steps-title">Инструкция по применению</h2>
+
+        <ol class="steps">
+          <li class="step step--1">
+            <img class="step__img" src="images/step-1.gif" alt="Мраморный герой касается сломанного рога на колонне">
+            <p class="step__text">Шаг 1. Дотроньтесь до рога</p>
+          </li>
+          <li class="step step--2">
+            <img class="step__img" src="images/step-2.gif" alt="Мраморный герой сдерживает гнев, вокруг головы молнии">
+            <p class="step__text">Шаг 2. Успокойтесь</p>
+          </li>
+          <li class="step step--3">
+            <img class="step__img" src="images/step-3.gif" alt="Мраморный варвар стоит у сундука">
+            <p class="step__text">Шаг 3. Приготовьтесь к&nbsp;последствиям</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
   </main>
 
   <script src="Javascripts/scripts.js"></script>

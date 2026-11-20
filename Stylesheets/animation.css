@@ -32,6 +32,7 @@
 /* Уважаем системную настройку «уменьшить движение» */
 @media (prefers-reduced-motion: reduce) {
   .horn, .horn__img, .whisper__typed::after { animation: none; }
+  .slide { transform: none; }
 
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

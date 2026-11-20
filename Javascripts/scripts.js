@@ -2,6 +2,35 @@
    Подключается в конце <body>, поэтому DOM уже готов.
    Парение и покачивание рога — на CSS (Stylesheets/animation.css). */
 (() => {
+  // ---------- Слайды: следующий наезжает на предыдущий ----------
+  const slides = [...document.querySelectorAll('.slide')];
+  let ticking = false;
+
+  const clamp01 = (n) => Math.min(1, Math.max(0, n));
+
+  const updateSlides = () => {
+    ticking = false;
+    const vh = window.innerHeight;
+    slides.forEach((slide, i) => {
+      if (i === 0) return;
+      // 0 — верх слайда у нижнего края окна, 1 — слайд закрыл экран
+      const enter = clamp01(1 - slide.getBoundingClientRect().top / vh);
+      slide.style.setProperty('--enter', enter.toFixed(4));
+      slides[i - 1].style.setProperty('--cover', enter.toFixed(4));
+    });
+  };
+
+  const requestUpdate = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(updateSlides);
+    }
+  };
+
+  window.addEventListener('scroll', requestUpdate, { passive: true });
+  window.addEventListener('resize', requestUpdate);
+  updateSlides();
+
   // ---------- Печать строки «гнев вернется потом» ----------
   const ghost = document.querySelector('.whisper__ghost');
   const typed = document.querySelector('.whisper__typed');
