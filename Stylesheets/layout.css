@@ -72,7 +72,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   top: calc(var(--u) * 336);
   width: calc(var(--u) * 740);
   translate: -50% 0;
-  font-family: "Respira", "UnifrakturCook", serif;
+  font-family: "Respira", serif;
   font-weight: 900;
   font-size: calc(var(--u) * 358);
   line-height: 0.862;

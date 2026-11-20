@@ -1,22 +1,11 @@
 /* Шрифты. Файлы лежат в /fonts, пути относительно этой папки. */
 
-/* Respira Black — шрифт из макета, его нет в свободном доступе.
-   Положите respira-black.woff2 в /fonts — он подхватится сам.
-   Пока файла нет, используется похожий готический UnifrakturCook. */
 @font-face {
   font-family: "Respira";
   font-style: normal;
   font-weight: 900;
   font-display: swap;
-  src: local("Respira Black"), local("Respira-Black"), url("../fonts/respira-black.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "UnifrakturCook";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("../fonts/unifrakturcook-700-latin.woff2") format("woff2");
+  src: url("../fonts/respira-black.woff2") format("woff2");
 }
 
 @font-face {
