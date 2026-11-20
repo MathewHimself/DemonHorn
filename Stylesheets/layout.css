@@ -12,6 +12,8 @@
 
   --float-distance: calc(var(--u) * 24); /* амплитуда парения рога */
   --float-duration: 6s;
+  --sway-angle: 2deg;    /* наклон при покачивании в каждую сторону */
+  --sway-duration: 4.4s;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -61,6 +63,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   height: calc(var(--u) * 942.49);
   object-fit: cover;
   rotate: 4.91deg;
+  transform-origin: 50% 50%;
 }
 
 /* ---------- Заголовок ---------- */
@@ -105,17 +108,38 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .motto {
   left: calc(50% - var(--u) * 1);
-  top: calc(var(--u) * 895);
-  font-size: calc(var(--u) * 30);
+  top: calc(var(--u) * 880);
+  font-size: calc(var(--u) * 56.29); /* как у DEMONA */
   color: var(--black);
 }
 
 .whisper {
   left: calc(50% - var(--u) * 1.5);
-  top: calc(var(--u) * 947);
+  top: calc(var(--u) * 962);
   font-family: "Comforter", cursive;
   font-weight: 400;
   font-size: calc(var(--u) * 20);
   letter-spacing: calc(var(--u) * 1.6);
   color: var(--red);
+}
+
+/* Печатная строка: невидимый «призрак» держит ширину и центр,
+   поверх него набирается текст */
+.whisper__ghost { visibility: hidden; }
+
+.whisper__typed {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: pre;
+}
+
+.whisper__typed::after {
+  content: "";
+  display: inline-block;
+  width: calc(var(--u) * 2);
+  height: 1em;
+  margin-left: calc(var(--u) * 3);
+  vertical-align: -0.1em;
+  background: currentColor;
 }

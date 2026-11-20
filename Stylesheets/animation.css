@@ -5,6 +5,25 @@
   animation: horn-float var(--float-duration) ease-in-out infinite alternate;
 }
 
+/* …и слегка покачивается из стороны в сторону */
+.horn__img {
+  animation: horn-sway var(--sway-duration) ease-in-out infinite alternate;
+}
+
+@keyframes horn-sway {
+  from { transform: rotate(calc(var(--sway-angle) * -1)); }
+  to   { transform: rotate(var(--sway-angle)); }
+}
+
+/* Мигающая каретка у печатной строки */
+.whisper__typed::after {
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+  50% { opacity: 0; }
+}
+
 @keyframes horn-float {
   from { transform: translateY(var(--float-distance)); }
   to   { transform: translateY(calc(var(--float-distance) * -1)); }
@@ -12,7 +31,7 @@
 
 /* Уважаем системную настройку «уменьшить движение» */
 @media (prefers-reduced-motion: reduce) {
-  .horn { animation: none; }
+  .horn, .horn__img, .whisper__typed::after { animation: none; }
 
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
