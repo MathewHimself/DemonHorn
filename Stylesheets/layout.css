@@ -1,0 +1,121 @@
+/* Раскладка и компоненты. Анимации — в animation.css, медиазапросы — в adaptive.css. */
+
+/* ---------- Токены ---------- */
+:root {
+  --bg: #FFFFFF;
+  --ink: #120909;
+  --black: #000000;
+  --red: #DA0000;
+
+  /* Макет 1920×1080: 1 px макета = --u, сцена вписывается в окно целиком */
+  --u: min(100vw / 1920, 100vh / 1080);
+
+  --float-distance: calc(var(--u) * 24); /* амплитуда парения рога */
+  --float-duration: 6s;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 300;
+  line-height: 1.4; /* reset.css ставит 1 — возвращаем читаемый интерлиньяж */
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+button { font: inherit; color: inherit; cursor: pointer; }
+
+/* ---------- Сцена ---------- */
+.stage {
+  position: relative;
+  width: calc(var(--u) * 1920);
+  height: calc(var(--u) * 1080);
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* ---------- Рог ---------- */
+.horn {
+  position: absolute;
+  left: calc(var(--u) * -68.78);
+  top: calc(var(--u) * -63.03);
+  width: calc(var(--u) * 1958.68);
+  height: calc(var(--u) * 1100.26);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.horn__img {
+  display: block;
+  flex: none;
+  width: calc(var(--u) * 1884.98);
+  height: calc(var(--u) * 942.49);
+  object-fit: cover;
+  rotate: 4.91deg;
+}
+
+/* ---------- Заголовок ---------- */
+.title { position: static; }
+
+.title__rog {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--u) * 336);
+  width: calc(var(--u) * 740);
+  translate: -50% 0;
+  font-family: "Respira", "UnifrakturCook", serif;
+  font-weight: 900;
+  font-size: calc(var(--u) * 358);
+  line-height: 0.862;
+  text-align: center;
+  color: var(--ink);
+}
+
+.title__demona {
+  position: absolute;
+  left: calc(50% - var(--u) * 349);
+  top: calc(var(--u) * 653);
+  translate: -50% 0;
+  font-size: calc(var(--u) * 56.29);
+  line-height: 0.862;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+/* ---------- Подписи ---------- */
+.motto,
+.whisper {
+  position: absolute;
+  translate: -50% 0;
+  line-height: 0.862;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.motto {
+  left: calc(50% - var(--u) * 1);
+  top: calc(var(--u) * 895);
+  font-size: calc(var(--u) * 30);
+  color: var(--black);
+}
+
+.whisper {
+  left: calc(50% - var(--u) * 1.5);
+  top: calc(var(--u) * 947);
+  font-family: "Comforter", cursive;
+  font-weight: 400;
+  font-size: calc(var(--u) * 20);
+  letter-spacing: calc(var(--u) * 1.6);
+  color: var(--red);
+}

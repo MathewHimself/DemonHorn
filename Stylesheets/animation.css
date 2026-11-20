@@ -1,0 +1,22 @@
+/* Переходы и анимации. */
+
+/* Рог плавно парит вверх-вниз */
+.horn {
+  animation: horn-float var(--float-duration) ease-in-out infinite alternate;
+}
+
+@keyframes horn-float {
+  from { transform: translateY(var(--float-distance)); }
+  to   { transform: translateY(calc(var(--float-distance) * -1)); }
+}
+
+/* Уважаем системную настройку «уменьшить движение» */
+@media (prefers-reduced-motion: reduce) {
+  .horn { animation: none; }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
