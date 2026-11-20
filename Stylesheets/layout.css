@@ -74,21 +74,29 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .slide--hero  { background: var(--bg); transform-origin: 50% 50%; } /* уходит вглубь от центра */
 .slide--steps { background: transparent; }
 
-/* Наезжающий слайд: панель с зубчатым краем-«рогами» и красная
-   кромка под ней. Форму края (clip-path) рисует scripts.js,
-   к концу въезда зубцы сглаживаются в ровную линию. */
-.slide__rim,
+/* Наезжающий слайд: панель и красная линия по его диагональному
+   верхнему краю. Линия видна только пока идёт прокрутка
+   (класс .is-scrolling ставит scripts.js) и пока слайд не встал на место. */
 .slide__panel {
   position: absolute;
   inset: 0;
-}
-
-.slide__rim { background: var(--red); }
-
-.slide__panel {
   display: grid;
   place-items: center;
   background: var(--black);
+}
+
+.slide__rim {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  height: max(4px, var(--u) * 10);
+  background: var(--red);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.slides.is-scrolling .slide__rim {
+  opacity: clamp(0, (1 - var(--enter)) * 20, 1);
 }
 
 /* ---------- Сцена ---------- */

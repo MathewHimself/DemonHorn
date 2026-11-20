@@ -15,6 +15,11 @@
   to   { transform: rotate(var(--sway-angle)); }
 }
 
+/* Красная линия по краю слайда плавно появляется и гаснет */
+.slide__rim {
+  transition: opacity 0.4s ease;
+}
+
 /* Мигающая каретка у печатной строки */
 .whisper__typed::after {
   animation: caret-blink 1s steps(1) infinite;
@@ -33,7 +38,7 @@
 @media (prefers-reduced-motion: reduce) {
   .horn, .horn__img, .whisper__typed::after { animation: none; }
   .slide { transform: none; }
-  .slide__rim, .slide__panel { clip-path: none !important; }
+  .slide__rim { display: none; }
 
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
