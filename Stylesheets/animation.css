@@ -20,6 +20,9 @@
   transition: opacity 0.4s ease;
 }
 
+/* Кольцо курсора на третьем слайде появляется плавно */
+.rage__cursor { transition: opacity 0.3s ease; }
+
 /* Мигающая каретка у печатной строки */
 .whisper__typed::after {
   animation: caret-blink 1s steps(1) infinite;

@@ -6,6 +6,7 @@
   --ink: #120909;
   --black: #000000;
   --white: #FFFFFF;
+  --char: #151515; /* фон третьего слайда */
   --red: #DA0000;
 
   /* Макет 1920×1080: 1 px макета = --u, сцена вписывается в окно целиком */
@@ -260,3 +261,85 @@ button { font: inherit; color: inherit; cursor: pointer; }
   line-height: 1.05;
   white-space: normal;
 }
+
+/* ---------- Слайд 3. Гнев проявляется ---------- */
+.slides__tail { height: 100vh; height: 100dvh; }
+
+.rage {
+  /* фото заполняет экран целиком (cover), в отличие от остальных сцен */
+  --cu: max(100vw / 1920, 100vh / 1080);
+  background: var(--char);
+  overflow: hidden;
+  cursor: none;
+  touch-action: pan-y;
+}
+
+.rage__fallback {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--cu) * 1920);
+  height: calc(var(--cu) * 1080);
+  translate: -50% -50%;
+}
+
+.rage__img {
+  position: absolute;
+  top: calc(var(--cu) * -61);
+  height: calc(var(--cu) * 1202);
+  max-width: none;
+  object-fit: cover;
+}
+
+.rage__img--grey {
+  left: calc(var(--cu) * -30);
+  width: calc(var(--cu) * 2000.5);
+}
+
+.rage__img--red {
+  left: calc(var(--cu) * -192);
+  width: calc(var(--cu) * 2215);
+  opacity: var(--reveal, 0);
+}
+
+.rage__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+/* Когда WebGL работает — рисует canvas, картинки остаются только источником */
+.rage.is-gl .rage__canvas { display: block; }
+.rage.is-gl .rage__fallback { visibility: hidden; }
+
+/* Курсор-кольцо: следует за мышью с запаздыванием */
+.rage__cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 84px;
+  height: 84px;
+  margin: -42px 0 0 -42px;
+  border: 1px solid var(--white);
+  border-radius: 50%;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(var(--cx, -200px), var(--cy, -200px)) scale(var(--cs, 1));
+}
+
+.rage__cursor::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--white);
+}
+
+.rage.is-hover .rage__cursor { opacity: 1; }
