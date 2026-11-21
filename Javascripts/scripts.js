@@ -86,7 +86,6 @@
 
     const slide = rage.closest('.slide');
     const canvas = rage.querySelector('.rage__canvas');
-    const cursor = rage.querySelector('.rage__cursor');
     const imgGrey = rage.querySelector('.rage__img--grey');
     const imgRed = rage.querySelector('.rage__img--red');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -105,7 +104,6 @@
     const s = {
       reveal: 0, revealT: 0,
       mx: -1e4, my: -1e4, mxT: -1e4, myT: -1e4,   // линза
-      cx: -200, cy: -200,                          // кольцо курсора
       lens: 0, lensT: 0,
       pinch: 0.55, pinchT: 0.55,
       speed: 0,
@@ -120,15 +118,13 @@
     rage.addEventListener('pointermove', (e) => {
       const [x, y] = toLocal(e);
       s.speed = Math.min(1, s.speed + Math.hypot(x - s.mxT, y - s.myT) / 400);
-      if (s.lensT === 0) { s.mx = x; s.my = y; s.cx = x; s.cy = y; } // без «прилёта» из угла
+      if (s.lensT === 0) { s.mx = x; s.my = y; } // без «прилёта» из угла
       s.mxT = x; s.myT = y;
       s.lensT = 1;
-      rage.classList.add('is-hover');
     });
     rage.addEventListener('pointerleave', () => {
       s.lensT = 0;
       s.pinchT = 0.55;
-      rage.classList.remove('is-hover');
     });
     rage.addEventListener('pointerdown', () => { s.pinchT = 1; });
     window.addEventListener('pointerup', () => { s.pinchT = 0.55; });
@@ -178,6 +174,22 @@
         return texture2D(tex, uv).rgb;
       }
 
+      // Цвет точки макета: серое фото, поверх — проявившееся красное.
+      // lensMix — насколько точка внутри линзы (там всё наоборот).
+      vec3 shade(vec2 design, float lensMix) {
+        vec3 grey = sampleRect(uGrey, uRectGrey, design);
+        vec3 red = sampleRect(uRed, uRectRed, design);
+        // Проявление: сначала тёмные места (глаза, волосы), неровными пятнами
+        float lum = dot(red, vec3(0.299, 0.587, 0.114));
+        float n = fbm(design / 160.0 + vec2(0.0, uTime * 0.04));
+        float field = n * 0.65 + (1.0 - lum) * 0.35;
+        float t = uReveal * 1.25 - 0.1;
+        float m = smoothstep(field - 0.08, field + 0.08, t);
+        // Линза показывает обратное: пока лицо спокойно — гнев, когда гнев проявился — спокойствие
+        m = mix(m, 1.0 - m, lensMix);
+        return mix(grey, red, m);
+      }
+
       void main() {
         vec2 p = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y);
 
@@ -185,42 +197,27 @@
         vec2 d = p - uMouse;
         float r = length(d);
         float R = uRadius * uLens;
-        float inLens = 0.0;
+        float f = R > 1.0 ? r / R : 9.0;
         vec2 q = p;
-        if (R > 1.0 && r < R) {
-          float f = r / R;
+        if (f < 1.0) {
           float k = 1.0 - 0.62 * uPinch * uLens;        // показатель < 1 → сжатие
           q = uMouse + (r > 0.0 ? d / r : vec2(0.0)) * R * pow(f, k);
-          inLens = 1.0 - smoothstep(0.55, 1.0, f);
         }
-
+        float lensMix = (1.0 - smoothstep(0.45, 1.05, f)) * uLens;
         vec2 design = (q - uOffset) / uScale;
 
-        // Лёгкая хроматическая аберрация у края линзы
-        vec2 ca = (r > 0.0 ? d / r : vec2(0.0)) * 3.0 * uLens * (1.0 - inLens) * step(r, R) / uScale;
-        vec3 grey = sampleRect(uGrey, uRectGrey, design);
-        vec3 red = vec3(
-          sampleRect(uRed, uRectRed, design + ca).r,
-          sampleRect(uRed, uRectRed, design).g,
-          sampleRect(uRed, uRectRed, design - ca).b
-        );
-
-        // Проявление: сначала тёмные места (глаза, волосы), неровными пятнами
-        float lum = dot(red, vec3(0.299, 0.587, 0.114));
-        float n = fbm(design / 160.0 + vec2(0.0, uTime * 0.04));
-        float field = n * 0.65 + (1.0 - lum) * 0.35;
-        float t = uReveal * 1.25 - 0.1;
-        float m = smoothstep(field - 0.08, field + 0.08, t);
-
-        // Линза показывает обратное: пока лицо спокойно — гнев, когда гнев проявился — спокойствие
-        m = mix(m, 1.0 - m, inLens * uLens);
-
-        vec3 col = mix(grey, red, m);
-
-        // Тонкое тёмное кольцо по краю линзы
-        if (R > 1.0) {
-          float ring = smoothstep(R - 2.0, R, r) * (1.0 - smoothstep(R, R + 2.0, r));
-          col = mix(col, col * 0.55, ring * uLens);
+        // Вместо обводки — мягкий блюр по краю линзы
+        float band = exp(-pow((f - 0.85) / 0.22, 2.0)) * uLens;
+        vec3 col;
+        if (band > 0.02) {
+          float br = 9.0 * band;                     // радиус размытия, px макета
+          col = shade(design, lensMix) * 0.2;
+          for (int i = 0; i < 8; i++) {
+            float a = float(i) * 0.7854;
+            col += shade(design + vec2(cos(a), sin(a)) * br, lensMix) * 0.1;
+          }
+        } else {
+          col = shade(design, lensMix);
         }
 
         gl_FragColor = vec4(col, 1.0);
@@ -303,17 +300,12 @@
       s.reveal = reduce ? s.revealT : lerp(s.reveal, s.revealT, 0.08);
       s.mx = lerp(s.mx, s.mxT, 0.22);
       s.my = lerp(s.my, s.myT, 0.22);
-      s.cx = lerp(s.cx, s.mxT, 0.14);
-      s.cy = lerp(s.cy, s.myT, 0.14);
       s.lens = lerp(s.lens, s.lensT, 0.12);
       s.speed *= 0.9;
       s.pinch = lerp(s.pinch, Math.min(1.2, s.pinchT + s.speed * 0.35), 0.12);
 
       slide.style.setProperty('--reveal', s.reveal.toFixed(4));
       rage.style.setProperty('--reveal', s.reveal.toFixed(4));
-      cursor.style.setProperty('--cx', `${s.cx.toFixed(1)}px`);
-      cursor.style.setProperty('--cy', `${s.cy.toFixed(1)}px`);
-      cursor.style.setProperty('--cs', (1.15 - 0.45 * (s.pinch - 0.55)).toFixed(3));
 
       if (U) {
         gl.uniform2f(U.uMouse, s.mx * dpr, s.my * dpr);

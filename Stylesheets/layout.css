@@ -313,33 +313,3 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* Когда WebGL работает — рисует canvas, картинки остаются только источником */
 .rage.is-gl .rage__canvas { display: block; }
 .rage.is-gl .rage__fallback { visibility: hidden; }
-
-/* Курсор-кольцо: следует за мышью с запаздыванием */
-.rage__cursor {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 84px;
-  height: 84px;
-  margin: -42px 0 0 -42px;
-  border: 1px solid var(--white);
-  border-radius: 50%;
-  mix-blend-mode: difference;
-  pointer-events: none;
-  opacity: 0;
-  transform: translate(var(--cx, -200px), var(--cy, -200px)) scale(var(--cs, 1));
-}
-
-.rage__cursor::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 6px;
-  height: 6px;
-  margin: -3px 0 0 -3px;
-  border-radius: 50%;
-  background: var(--white);
-}
-
-.rage.is-hover .rage__cursor { opacity: 1; }
