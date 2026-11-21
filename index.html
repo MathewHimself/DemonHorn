@@ -71,6 +71,90 @@
     <!-- Запас прокрутки, пока проявляется третий слайд -->
     <div class="slides__tail" aria-hidden="true"></div>
 
+    <!-- Слайд 4. Отзывы: бесконечное поле окон, тянется мышью во все стороны.
+         Список ниже — источник: scripts.js раскладывает его по окнам
+         в шахматном порядке (отзыв — фото — отзыв…) -->
+    <section class="slide slide--reviews" aria-labelledby="reviews-title">
+      <div class="slide__rim" aria-hidden="true"></div>
+      <div class="slide__panel reviews">
+        <h2 class="visually-hidden" id="reviews-title">Отзывы</h2>
+
+        <ul class="reviews__source visually-hidden">
+          <li>
+            <figure class="review">
+              <blockquote class="review__text">Сдал гнев в понедельник. Во вторник он вернулся вместе с моей бывшей.</blockquote>
+              <figcaption class="review__meta"><span class="review__name">Артём, 27</span><span class="review__count">Гнев сдан: 3 раза</span></figcaption>
+            </figure>
+          </li>
+          <li>
+            <figure class="review">
+              <blockquote class="review__text">Рог тёплый на ощупь. Начальник теперь кажется милым. Подозрительно.</blockquote>
+              <figcaption class="review__meta"><span class="review__name">Вика, 31</span><span class="review__count">Гнев сдан: 1 раз</span></figcaption>
+            </figure>
+          </li>
+          <li>
+            <figure class="review">
+              <blockquote class="review__text">Шаг 2 дался тяжелее всего. Успокаивался три дня, зато сундук цел.</blockquote>
+              <figcaption class="review__meta"><span class="review__name">Глеб, 24</span><span class="review__count">Гнев сдан: 2 раза</span></figcaption>
+            </figure>
+          </li>
+          <li>
+            <figure class="review">
+              <blockquote class="review__text">Взяла рог на семейный ужин. Впервые за десять лет никто не спорил о политике.</blockquote>
+              <figcaption class="review__meta"><span class="review__name">Лиза, 35</span><span class="review__count">Гнев сдан: 7 раз</span></figcaption>
+            </figure>
+          </li>
+          <li>
+            <figure class="review">
+              <blockquote class="review__text">Гнев вернулся ровно через месяц, как и обещали. За пунктуальность пять звёзд.</blockquote>
+              <figcaption class="review__meta"><span class="review__name">Тимур, 29</span><span class="review__count">Гнев сдан: 4 раза</span></figcaption>
+            </figure>
+          </li>
+          <li>
+            <p class="review review--motto">Отдай гнев сейчас&nbsp; - испытай его потом</p>
+          </li>
+          <li>
+            <figure class="review">
+              <blockquote class="review__text">Купил второй рог для соседа с перфоратором. Теперь мы оба спокойны. Пока.</blockquote>
+              <figcaption class="review__meta"><span class="review__name">Олег, 42</span><span class="review__count">Гнев сдан: 12 раз</span></figcaption>
+            </figure>
+          </li>
+          <li>
+            <figure class="review">
+              <blockquote class="review__text">Положил рог под подушку. Всю ночь снились мраморные греки, пинающие сундуки.</blockquote>
+              <figcaption class="review__meta"><span class="review__name">Даня, 19</span><span class="review__count">Гнев сдан: 1 раз</span></figcaption>
+            </figure>
+          </li>
+          <li>
+            <figure class="review">
+              <blockquote class="review__text">Отдала гнев за пробки. Теперь стою в них с очень спокойной улыбкой.</blockquote>
+              <figcaption class="review__meta"><span class="review__name">Марина, 33</span><span class="review__count">Гнев сдан: 9 раз</span></figcaption>
+            </figure>
+          </li>
+          <li>
+            <figure class="review">
+              <blockquote class="review__text">Не верил, пока не дотронулся. Теперь верю и немного боюсь.</blockquote>
+              <figcaption class="review__meta"><span class="review__name">Саша, 22</span><span class="review__count">Гнев сдан: 1 раз</span></figcaption>
+            </figure>
+          </li>
+          <li>
+            <figure class="review">
+              <blockquote class="review__text">Гнев вернулся и привёл друзей. Претензий не имею: нас предупреждали.</blockquote>
+              <figcaption class="review__meta"><span class="review__name">Ника, 26</span><span class="review__count">Гнев сдан: 5 раз</span></figcaption>
+            </figure>
+          </li>
+        </ul>
+
+        <div class="reviews__faces" hidden>
+          <img class="reviews__face" src="images/face-1.jpg" alt="">
+          <img class="reviews__face" src="images/face-2.jpg" alt="">
+          <img class="reviews__face" src="images/face-3.jpg" alt="">
+        </div>
+
+        <div class="reviews__field" aria-hidden="true"></div>
+      </div>
+    </section>
+
   </main>
 
   <script src="Javascripts/scripts.js"></script>

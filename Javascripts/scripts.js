@@ -340,6 +340,157 @@
     }
   })();
 
+  // ---------- Слайд 4: бесконечное поле отзывов, тянется мышью ----------
+  (() => {
+    const root = document.querySelector('.reviews');
+    if (!root) return;
+
+    const field = root.querySelector('.reviews__field');
+    const cards = [...root.querySelectorAll('.reviews__source > li > .review')];
+    const faces = [...root.querySelectorAll('.reviews__face')];
+    if (!field || !cards.length || !faces.length) return;
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Размеры из макета: окно 334.258, шаг сетки 380.85, отступ слева 31
+    const TILE = 334.258, PITCH = 380.85, LEFT = 31;
+    const FRICTION = 0.94;       // инерция после броска
+    const DRIFT = 0.25;          // медленный дрейф, пока поле не трогают (px за кадр)
+
+    const mod = (n, m) => ((n % m) + m) % m;
+
+    let size = 0, pitch = 0, cols = 0, rows = 0;
+    let offX = 0, offY = 0, vx = 0, vy = 0;
+    let dragging = false, lastX = 0, lastY = 0, lastT = 0, idleSince = 0;
+    let slots = [];
+
+    // Содержимое клетки (cx, cy): чёрные клетки шахматки — отзывы, белые — фото
+    const fill = (slot, cx, cy) => {
+      const key = `${cx}:${cy}`;
+      if (slot.key === key) return;
+      slot.key = key;
+      const el = slot.el;
+      if (mod(cx + cy, 2) === 0) {
+        // 11 отзывов и шаг 7/13 — соседние по диагонали окна не повторяются
+        const card = cards[mod(cx * 7 + cy * 13, cards.length)];
+        el.className = 'tile tile--text';
+        el.replaceChildren(card.cloneNode(true));
+      } else {
+        const face = faces[mod(cx + Math.floor(cy / 2), faces.length)];
+        el.className = 'tile tile--face';
+        el.replaceChildren(face.cloneNode(true));
+      }
+    };
+
+    const layout = () => {
+      const w = root.clientWidth, h = root.clientHeight;
+      const s = Math.min(w / 1920, h / 1080);
+      size = Math.max(240, TILE * s);              // на телефоне окна не мельчают
+      pitch = size * PITCH / TILE;
+      root.style.setProperty('--tile', `${size}px`);
+
+      cols = Math.ceil(w / pitch) + 2;
+      rows = Math.ceil(h / pitch) + 2;
+      const need = cols * rows;
+      while (slots.length < need) {
+        const el = document.createElement('div');
+        field.appendChild(el);
+        slots.push({ el, key: '' });
+      }
+      while (slots.length > need) slots.pop().el.remove();
+    };
+
+    const place = () => {
+      const c0 = Math.floor(-offX / pitch) - 1;
+      const r0 = Math.floor(-offY / pitch) - 1;
+      let k = 0;
+      for (let j = 0; j < rows; j++) {
+        for (let i = 0; i < cols; i++) {
+          const cx = c0 + i, cy = r0 + j;
+          const slot = slots[k++];
+          fill(slot, cx, cy);
+          slot.el.style.transform = `translate3d(${(cx * pitch + offX).toFixed(2)}px, ${(cy * pitch + offY).toFixed(2)}px, 0)`;
+        }
+      }
+    };
+
+    // ---------- Перетаскивание ----------
+    root.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      dragging = true;
+      vx = vy = 0;
+      lastX = e.clientX; lastY = e.clientY; lastT = performance.now();
+      root.setPointerCapture(e.pointerId);
+      root.classList.add('is-dragging');
+      run();
+    });
+
+    root.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const now = performance.now();
+      const dx = e.clientX - lastX, dy = e.clientY - lastY;
+      const dt = Math.max(1, now - lastT);
+      offX += dx; offY += dy;
+      // скорость в px за кадр (~16 мс), сглаженная
+      vx = vx * 0.6 + (dx / dt) * 16 * 0.4;
+      vy = vy * 0.6 + (dy / dt) * 16 * 0.4;
+      lastX = e.clientX; lastY = e.clientY; lastT = now;
+    });
+
+    const release = () => {
+      if (!dragging) return;
+      dragging = false;
+      if (performance.now() - lastT > 80) vx = vy = 0;  // отпустили без броска
+      if (reduce) vx = vy = 0;
+      idleSince = performance.now();
+      root.classList.remove('is-dragging');
+    };
+    root.addEventListener('pointerup', release);
+    root.addEventListener('pointercancel', release);
+
+    // Горизонтальная прокрутка тачпада тоже двигает поле
+    root.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        e.preventDefault();
+        offX -= e.deltaX;
+        idleSince = performance.now();
+        run();
+      }
+    }, { passive: false });
+
+    // ---------- Цикл ----------
+    let visible = false, raf = 0;
+    const frame = (now) => {
+      raf = 0;
+      if (!dragging) {
+        offX += vx; offY += vy;
+        vx *= FRICTION; vy *= FRICTION;
+        if (Math.abs(vx) < 0.01) vx = 0;
+        if (Math.abs(vy) < 0.01) vy = 0;
+        // через 1.5 с покоя поле плавно дрейфует по диагонали
+        if (!reduce && !vx && !vy && now - idleSince > 1500) {
+          const k = Math.min(1, (now - idleSince - 1500) / 1500);
+          offX -= DRIFT * k; offY -= DRIFT * 0.6 * k;
+        }
+      }
+      place();
+      if (visible) raf = requestAnimationFrame(frame);
+    };
+    const run = () => { if (!raf) raf = requestAnimationFrame(frame); };
+
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible) run();
+    }).observe(root);
+
+    window.addEventListener('resize', () => { layout(); place(); });
+
+    layout();
+    offX = LEFT * (pitch / PITCH);   // как в макете: первое окно в 31 px от края
+    offY = -9 * (pitch / PITCH);
+    place();
+  })();
+
   // ---------- Печать строки «гнев вернется потом» ----------
   const ghost = document.querySelector('.whisper__ghost');
   const typed = document.querySelector('.whisper__typed');

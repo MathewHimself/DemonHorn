@@ -32,6 +32,16 @@ body {
 
 button { font: inherit; color: inherit; cursor: pointer; }
 
+/* Скрыто с экрана, но доступно скринридерам */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* ---------- Слайды ----------
    Каждый слайд — экран, прилипающий к верху окна. Следующий слайд
    выезжает поверх предыдущего: сначала повёрнутый и чуть увеличенный,
@@ -313,3 +323,90 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* Когда WebGL работает — рисует canvas, картинки остаются только источником */
 .rage.is-gl .rage__canvas { display: block; }
 .rage.is-gl .rage__fallback { visibility: hidden; }
+
+/* ---------- Слайд 4. Отзывы ---------- */
+.reviews {
+  --tile: 334px; /* размер окна, уточняет scripts.js */
+  background: var(--char);
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y; /* на телефоне вертикальный свайп листает страницу */
+}
+
+.reviews.is-dragging { cursor: grabbing; }
+
+.reviews__field {
+  position: absolute;
+  inset: 0;
+}
+
+/* Окно: квадрат с вырезанными углами, форма из макета */
+.tile {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--tile);
+  height: var(--tile);
+  -webkit-mask: url("../images/tile-mask.svg") center / 100% 100% no-repeat;
+  mask: url("../images/tile-mask.svg") center / 100% 100% no-repeat;
+  will-change: transform;
+}
+
+.tile--face { background: var(--char); }
+
+.tile--face img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.tile--text {
+  /* внутренний квадрат без вырезов: 50.6 / 334 ≈ 15% от окна
+     (не в %: проценты padding считаются от ширины поля) */
+  padding: calc(var(--tile) * 0.155);
+  background: var(--white);
+  color: var(--char);
+  display: flex;
+}
+
+.review {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: calc(var(--tile) * 0.04);
+  width: 100%;
+}
+
+.review__text {
+  font-size: max(13px, var(--tile) * 0.056);
+  line-height: 1.22;
+}
+
+.review__text::before { content: "«"; }
+.review__text::after  { content: "»"; }
+
+.review__meta {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--tile) * 0.008);
+  font-size: max(11px, var(--tile) * 0.042);
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.review__name { font-weight: 300; }
+.review__count { color: var(--red); }
+
+/* Девиз — как в макете: крупно, капсом */
+.review--motto {
+  align-self: center;
+  font-size: calc(var(--tile) * 0.09);
+  line-height: 1;
+  text-transform: uppercase;
+}
