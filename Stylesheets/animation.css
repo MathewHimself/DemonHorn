@@ -20,14 +20,8 @@
   transition: opacity 0.4s ease;
 }
 
-/* Мигающая каретка у печатной строки */
-.whisper__typed::after {
-  animation: caret-blink 1s steps(1) infinite;
-}
-
-@keyframes caret-blink {
-  50% { opacity: 0; }
-}
+/* Пункты меню мягко краснеют при наведении */
+.nav__link { transition: color 0.25s ease; }
 
 @keyframes horn-float {
   from { transform: translateY(var(--float-distance)); }
@@ -36,7 +30,7 @@
 
 /* Уважаем системную настройку «уменьшить движение» */
 @media (prefers-reduced-motion: reduce) {
-  .horn, .horn__img, .whisper__typed::after { animation: none; }
+  .horn, .horn__img { animation: none; }
   .slide { transform: none; }
   .slide__rim { display: none; }
 

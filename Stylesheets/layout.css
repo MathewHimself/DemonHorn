@@ -66,6 +66,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   overflow: hidden;
   transform-origin: 50% 0%; /* въезд: поворот вокруг середины верхнего края */
   transform:
+    /* сдвиг вниз прячет поднятый угол, пока слайд ещё не начал въезжать */
+    translateY(calc(12vh * (1 - var(--enter))))
     rotate(calc(var(--tilt) * (1 - var(--enter))))
     scale(calc(1 + 0.2 * (1 - var(--enter))))
     scale(calc(1 - 0.08 * var(--cover)));
@@ -117,13 +119,38 @@ button { font: inherit; color: inherit; cursor: pointer; }
   height: calc(var(--u) * 1080);
 }
 
+/* ---------- Навигация ---------- */
+.nav__link {
+  position: absolute;
+  top: calc(var(--u) * 88);
+  translate: -50% 0;
+  font-size: calc(var(--u) * 30);
+  line-height: 0.862;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--black);
+  text-decoration: none;
+  z-index: 1;
+}
+
+.nav__link--main     { left: calc(50% - var(--u) * 802); }
+.nav__link--chapters { left: calc(50% - var(--u) * 652); }
+
+.nav__link:hover,
+.nav__link:focus-visible { color: var(--red); }
+
+.nav__link:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: calc(var(--u) * 8);
+}
+
 /* ---------- Рог ---------- */
 .horn {
   position: absolute;
-  left: calc(var(--u) * -68.78);
-  top: calc(var(--u) * -63.03);
-  width: calc(var(--u) * 1958.68);
-  height: calc(var(--u) * 1100.26);
+  left: calc(var(--u) * 182);
+  top: calc(var(--u) * -42);
+  width: calc(var(--u) * 1556.1);
+  height: calc(var(--u) * 1235);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -134,10 +161,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .horn__img {
   display: block;
   flex: none;
-  width: calc(var(--u) * 1884.98);
-  height: calc(var(--u) * 942.49);
+  width: calc(var(--u) * 1448);
+  height: calc(var(--u) * 1086);
   object-fit: cover;
-  rotate: 4.91deg;
+  rotate: 6.16deg;
   transform-origin: 50% 50%;
 }
 
@@ -146,8 +173,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .title__rog {
   position: absolute;
-  left: 50%;
-  top: calc(var(--u) * 336);
+  left: calc(50% - var(--u) * 4);
+  top: calc(var(--u) * 313);
   width: calc(var(--u) * 740);
   translate: -50% 0;
   font-family: "Respira", serif;
@@ -160,8 +187,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .title__demona {
   position: absolute;
-  left: calc(50% - var(--u) * 349);
-  top: calc(var(--u) * 653);
+  left: calc(50% + var(--u) * 489);
+  top: calc(var(--u) * 600);
   translate: -50% 0;
   font-size: calc(var(--u) * 56.29);
   line-height: 0.862;
@@ -170,53 +197,18 @@ button { font: inherit; color: inherit; cursor: pointer; }
   color: var(--ink);
 }
 
-/* ---------- Подписи ---------- */
-.motto,
-.whisper {
+/* ---------- Подпись ---------- */
+.tagline {
   position: absolute;
+  left: calc(50% + var(--u) * 10);
+  top: calc(var(--u) * 923);
   translate: -50% 0;
+  font-size: calc(var(--u) * 30);
   line-height: 0.862;
   text-align: center;
   text-transform: uppercase;
   white-space: nowrap;
-}
-
-.motto {
-  left: calc(50% - var(--u) * 1);
-  top: calc(var(--u) * 880);
-  font-size: calc(var(--u) * 56.29); /* как у DEMONA */
   color: var(--black);
-}
-
-.whisper {
-  left: calc(50% - var(--u) * 1.5);
-  top: calc(var(--u) * 962);
-  font-family: "Comforter", cursive;
-  font-weight: 400;
-  font-size: calc(var(--u) * 20);
-  letter-spacing: calc(var(--u) * 1.6);
-  color: var(--red);
-}
-
-/* Печатная строка: невидимый «призрак» держит ширину и центр,
-   поверх него набирается текст */
-.whisper__ghost { visibility: hidden; }
-
-.whisper__typed {
-  position: absolute;
-  left: 0;
-  top: 0;
-  white-space: pre;
-}
-
-.whisper__typed::after {
-  content: "";
-  display: inline-block;
-  width: calc(var(--u) * 2);
-  height: 1em;
-  margin-left: calc(var(--u) * 3);
-  vertical-align: -0.1em;
-  background: currentColor;
 }
 
 /* ---------- Слайд 2. Инструкция ---------- */
